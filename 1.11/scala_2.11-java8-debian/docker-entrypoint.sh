@@ -22,7 +22,15 @@ COMMAND_STANDALONE="standalone-job"
 
 # If unspecified, the hostname of the container is taken as the JobManager address
 JOB_MANAGER_RPC_ADDRESS=${JOB_MANAGER_RPC_ADDRESS:-$(hostname -f)}
+CONF_DIR="${FLINK_HOME}/conf"
 CONF_FILE="${FLINK_HOME}/conf/flink-conf.yaml"
+if [ -z "$CONF_VOLUME_DIR" ];then
+  CONF_VOLUME_DIR="${FLINK_HOME}/conf-volume"
+fi
+
+if [ -d "$CONF_VOLUME_DIR"];then
+  cp -rf "${$CONF_VOLUME_DIR}/*" "$CONF_FILE/"
+fi
 
 drop_privs_cmd() {
     if [ $(id -u) != 0 ]; then
@@ -77,6 +85,10 @@ set_common_options() {
     set_config_option jobmanager.rpc.address ${JOB_MANAGER_RPC_ADDRESS}
     set_config_option blob.server.port 6124
     set_config_option query.server.port 6125
+}
+
+copy_conf_from_volume() {
+  if [ -d ""]
 }
 
 prepare_job_manager_start() {
